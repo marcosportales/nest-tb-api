@@ -7,7 +7,7 @@ import { Repository } from 'typeorm';
 export class MedicionService {
   constructor(
     @InjectRepository(Medicion)
-    private mediciones_repository: Repository<Medicion>,
+    private readonly mediciones_repository: Repository<Medicion>,
   ) {}
 
   async getAllMediciones(): Promise<Medicion[]> {
