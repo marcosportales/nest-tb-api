@@ -11,6 +11,7 @@ export interface SubscriptionMessage {
     entityType: string;
     entityId: string;
     scope: string;
+    type: string;
     cmdId: number;
     tsStart?: number;
   }>;
@@ -27,9 +28,9 @@ export class ThingsboardGateway implements OnGatewayInit {
   private interval_id: NodeJS.Timeout;
 
   constructor(
-    private configService: ConfigService,
-    private auth_service: AuthService,
-    private db_service: DbService,
+    private readonly configService: ConfigService,
+    private readonly auth_service: AuthService,
+    private readonly db_service: DbService,
   ) {}
 
   async afterInit() {
@@ -48,18 +49,17 @@ export class ThingsboardGateway implements OnGatewayInit {
 
     this.ws.on('open', () => {
       console.log('Connected to Thingsboard WebSocket');
-
       const subscription_message: SubscriptionMessage = {
         tsSubCmds: [
           {
             entityType: 'DEVICE',
             entityId: this.TB_DEVICE_ID,
-            scope: 'TIME_SERIES',
+            scope: 'LATEST_TELEMETRY',
+            type: 'TIMESERIES',
             cmdId: 1,
           },
         ],
       };
-
       this.sendMessage(JSON.stringify(subscription_message));
     });
 
@@ -67,6 +67,7 @@ export class ThingsboardGateway implements OnGatewayInit {
       console.log('Receiving data from Thingsboard WebSocket');
       const parsed_data: ITelemetryData = JSON.parse(data.toString());
       if (parsed_data.errorCode !== 0 || parsed_data.errorMessage) return;
+      console.log(data.toString());
       await this.db_service.processTelemetry(parsed_data);
     });
 
@@ -82,7 +83,6 @@ export class ThingsboardGateway implements OnGatewayInit {
           return await this.auth_service.updateAccessToken();
         }
       }
-
       this.connectWebSocket();
     });
 
