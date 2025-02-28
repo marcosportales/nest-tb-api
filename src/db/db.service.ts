@@ -7,8 +7,8 @@ import { Medicion } from '@/entities/medicion.entity';
 @Injectable()
 export class DbService {
   constructor(
-    private mediciones_service: MedicionService,
-    private variables_service: VariableService,
+    private readonly mediciones_service: MedicionService,
+    private readonly variables_service: VariableService,
   ) {}
 
   async processTelemetry(telemetry_data: ITelemetryData) {
