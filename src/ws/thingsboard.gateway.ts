@@ -37,7 +37,7 @@ export class ThingsboardGateway implements OnGatewayInit {
     this.TB_DEVICE_ID = this.configService.get<string>('TB_DEVICE_ID');
     this.TB_TIMEOUT = this.configService.get<number>('TB_TIMEOUT');
     this.RESEND_TIMEOUT = this.configService.get<number>('RESEND_TIMEOUT');
-    // antes de iniciar la conexion generar un JWT
+    // before start connection generates a JWT
     const access_token = await this.auth_service.updateAccessToken();
     this.TB_WS_URL = `ws://${TB_HOST}/api/ws/plugins/telemetry?token=${access_token}`;
     this.connectWebSocket();
@@ -63,34 +63,32 @@ export class ThingsboardGateway implements OnGatewayInit {
       this.sendMessage(JSON.stringify(subscription_message));
     });
 
-    this.ws.on('message', (data) => {
+    this.ws.on('message', async (data) => {
       console.log('Receiving data from Thingsboard WebSocket');
       const parsed_data: ITelemetryData = JSON.parse(data.toString());
       if (parsed_data.errorCode !== 0 || parsed_data.errorMessage) return;
-
-      // console.log(data.toString());
-      this.db_service.processTelemetry(parsed_data);
+      await this.db_service.processTelemetry(parsed_data);
     });
 
-    this.ws.on('close', (_, reason) => {
+    this.ws.on('close', async (_, reason) => {
       console.log(
         'Disconnected from Thingsboard WebSocket for reason: ',
         reason.toString(),
       );
-      if (reason.toString() === DISCONNECT_REASONS.JWT_EXPIRED) {
-        console.log('JWT has expired, trying to get newer...');
-        // Close WebSocket connection
-        this.ws.close();
-        // Get new JWT
-        this.auth_service.updateAccessToken();
-        // Reopen to WebSocket using new JWT
-        this.connectWebSocket();
+      switch (reason.toString()) {
+        // if JWT has expired, we need to get a new one
+        case DISCONNECT_REASONS.JWT_EXPIRED: {
+          console.log('JWT has expired, trying to get newer...');
+          return await this.auth_service.updateAccessToken();
+        }
       }
+
+      this.connectWebSocket();
     });
 
     this.ws.on('error', (err) => {
       console.log('Error connecting to Thingsboard WebSocket: ', err);
-      // reconectar al websocket
+      // Reconnect to websocket
       this.ws.close();
       this.connectWebSocket();
     });
