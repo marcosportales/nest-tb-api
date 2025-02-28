@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 export class VariableService {
   constructor(
     @InjectRepository(Variable)
-    private variables_repository: Repository<Variable>,
+    private readonly variables_repository: Repository<Variable>,
   ) {}
 
   async getAllVariables(): Promise<Variable[]> {
