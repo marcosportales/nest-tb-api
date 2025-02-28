@@ -21,13 +21,13 @@ export class Variable {
   @Column({ type: 'varchar', length: 255, nullable: true })
   description?: string;
 
-  @Column({ type: 'varchar', length: 20 })
+  @Column({ type: 'varchar', length: 20, nullable: true })
   signal_type: string;
 
-  @Column({ type: 'char', length: 1 })
+  @Column({ type: 'char', length: 1, nullable: true })
   io_type: string;
 
-  @Column({ type: 'varchar', length: 40 })
+  @Column({ type: 'varchar', length: 40, nullable: true })
   structure_name: string;
 
   @OneToMany(() => Medicion, (medicion) => medicion.variable, { cascade: true })
