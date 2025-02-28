@@ -1,0 +1,17 @@
+version: '3.5'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tesis-api
+    environment:
+      - PORT=${PORT}
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./src:/app/src
+
+volumes:
+  tesis_api:
