@@ -9,8 +9,8 @@ export class AuthService {
   private access_token: string | null;
 
   constructor(
-    private configService: ConfigService,
-    private axios_config_service: AxiosConfigService,
+    private readonly configService: ConfigService,
+    private readonly axios_config_service: AxiosConfigService,
   ) {
     this.axios_instance = this.axios_config_service.getAxiosInstance();
   }
