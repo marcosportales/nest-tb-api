@@ -5,14 +5,14 @@ import { AxiosInstance } from 'axios';
 
 @Injectable()
 export class AuthService {
-  private axios_instance: AxiosInstance;
+  private axiosInstance: AxiosInstance;
   private access_token: string | null;
 
   constructor(
     private readonly configService: ConfigService,
     private readonly axios_config_service: AxiosConfigService,
   ) {
-    this.axios_instance = this.axios_config_service.getAxiosInstance();
+    this.axiosInstance = this.axios_config_service.getAxiosInstance();
   }
 
   get_access_token() {
@@ -24,7 +24,7 @@ export class AuthService {
     const username = this.configService.get<string>('TB_USERNAME');
     const password = this.configService.get<string>('TB_PASSWORD');
 
-    const response = await this.axios_instance.post(TB_LOGIN_URL, {
+    const response = await this.axiosInstance.post(TB_LOGIN_URL, {
       username,
       password,
     });
