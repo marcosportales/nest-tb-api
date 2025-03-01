@@ -9,15 +9,14 @@ export class AxiosConfigService {
   constructor(private configService: ConfigService) {
     if (!AxiosConfigService.instance) {
       const TB_HOST = this.configService.get<string>('TB_HOST');
-
       if (!TB_HOST) {
         throw new Error(
           '⚠️ ERROR: La variable de entorno TB_HOST no está definida.',
         );
       }
-
+      const prod = this.configService.get<string>('NODE_ENV') === 'production';
       AxiosConfigService.instance = axios.create({
-        baseURL: `http://${TB_HOST}/`,
+        baseURL: `${prod ? 'https' : 'http'}://${TB_HOST}/`,
         headers: {
           'Content-Type': 'application/json',
         },
