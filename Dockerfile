@@ -4,10 +4,11 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm install
-
 COPY . .
+RUN rm .env
+RUN mv .env.production .env
 
 RUN npm run build
+# RUN npm run migrations:run
 
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "start:prod"]
