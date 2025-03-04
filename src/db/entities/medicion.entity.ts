@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { Variable } from './variable.entity';
 
 @Entity('mediciones')
@@ -6,18 +6,16 @@ export class Medicion {
   @PrimaryColumn()
   variable_id: number;
 
-  @PrimaryColumn({ type: 'date' })
+  @PrimaryColumn({ type: 'varchar' })
   date: string;
 
-  @PrimaryColumn({ type: 'time' })
+  @PrimaryColumn({ type: 'varchar' })
   time: string;
 
   @Column({ type: 'jsonb' })
   value: string | number | boolean;
 
-  @ManyToOne(() => Variable, (variable) => variable.mediciones, {
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne(() => Variable, (variable) => variable.mediciones)
   @JoinColumn({ name: 'variable_id' })
   variable: Variable;
 }
