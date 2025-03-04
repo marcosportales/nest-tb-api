@@ -15,7 +15,7 @@ export class Variable {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 30, unique: true })
+  @Column({ type: 'varchar', length: 50, unique: true })
   nombre: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
@@ -27,7 +27,7 @@ export class Variable {
   @Column({ type: 'char', length: 1, nullable: true })
   io_type: string;
 
-  @Column({ type: 'varchar', length: 40, nullable: true })
+  @Column({ type: 'varchar', length: 50, nullable: true })
   structure_name: string;
 
   @OneToMany(() => Medicion, (medicion) => medicion.variable, { cascade: true })
