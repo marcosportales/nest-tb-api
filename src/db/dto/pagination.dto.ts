@@ -1,15 +1,14 @@
-import { IsPositive, Min } from 'class-validator';
-import { Optional } from '@nestjs/common';
+import { IsOptional, IsPositive, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class PaginationDto {
   @IsPositive()
-  @Optional()
+  @IsOptional()
   @Type(() => Number)
   limit?: number;
 
   @Min(0)
-  @Optional()
+  @IsOptional()
   @Type(() => Number)
   offset?: number;
 }
