@@ -5,13 +5,15 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    restart: always
     container_name: tesis-api
-    environment:
-      - PORT=${PORT}
     ports:
       - "3000:3000"
     volumes:
       - ./src:/app/src
+    networks:
+      - tesis_default
 
-volumes:
-  tesis_api:
+networks:
+  tesis_default:
+    external: true
