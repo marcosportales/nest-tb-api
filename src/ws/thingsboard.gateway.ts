@@ -1,10 +1,11 @@
 import { OnGatewayInit, WebSocketGateway } from '@nestjs/websockets';
 import * as WebSocket from 'ws';
 import { ConfigService } from '@nestjs/config';
-import { ITelemetryData } from '@/dto/telemetry_data.dto';
-import { DISCONNECT_REASONS } from '@/constants';
+import { ITelemetryData } from '@/ws/dto/telemetry_data.dto';
+import { DISCONNECT_REASONS, ENVIROMENT } from '@/constants';
 import { AuthService } from '@/auth/auth.service';
 import { DbService } from '@/db/db.service';
+import { Logger } from '@nestjs/common';
 
 export interface SubscriptionMessage {
   tsSubCmds: Array<{
@@ -23,24 +24,25 @@ export class ThingsboardGateway implements OnGatewayInit {
   private ws: WebSocket;
   private TB_WS_URL: string;
   private TB_DEVICE_ID: string;
-  private TB_TIMEOUT: number;
   private RESEND_TIMEOUT: number;
-  private interval_id: NodeJS.Timeout;
+  private intervalId: NodeJS.Timeout;
+  private readonly logger = new Logger('ThingsboardGateway');
 
   constructor(
     private readonly configService: ConfigService,
-    private readonly auth_service: AuthService,
-    private readonly db_service: DbService,
+    private readonly authService: AuthService,
+    private readonly dbService: DbService,
   ) {}
 
   async afterInit() {
     const TB_HOST = this.configService.get<string>('TB_HOST');
     this.TB_DEVICE_ID = this.configService.get<string>('TB_DEVICE_ID');
-    this.TB_TIMEOUT = this.configService.get<number>('TB_TIMEOUT');
     this.RESEND_TIMEOUT = this.configService.get<number>('RESEND_TIMEOUT');
+    const NODE_ENV = this.configService.get<string>('NODE_ENV');
+    const PROTOCOL = NODE_ENV === ENVIROMENT.production ? 'wss' : 'ws';
     // before start connection generates a JWT
-    const access_token = await this.auth_service.updateAccessToken();
-    this.TB_WS_URL = `ws://${TB_HOST}/api/ws/plugins/telemetry?token=${access_token}`;
+    const accessToken = await this.authService.updateAccessToken();
+    this.TB_WS_URL = `${PROTOCOL}://${TB_HOST}/api/ws/plugins/telemetry?token=${accessToken}`;
     this.connectWebSocket();
   }
 
@@ -48,8 +50,8 @@ export class ThingsboardGateway implements OnGatewayInit {
     this.ws = new WebSocket(this.TB_WS_URL);
 
     this.ws.on('open', () => {
-      console.log('Connected to Thingsboard WebSocket');
-      const subscription_message: SubscriptionMessage = {
+      this.logger.log('Connected to Thingsboard WebSocket');
+      const subscriptionMessage: SubscriptionMessage = {
         tsSubCmds: [
           {
             entityType: 'DEVICE',
@@ -60,49 +62,47 @@ export class ThingsboardGateway implements OnGatewayInit {
           },
         ],
       };
-      this.sendMessage(JSON.stringify(subscription_message));
+      this.sendMessage(JSON.stringify(subscriptionMessage));
     });
 
     this.ws.on('message', async (data) => {
-      console.log('Receiving data from Thingsboard WebSocket');
-      const parsed_data: ITelemetryData = JSON.parse(data.toString());
-      if (parsed_data.errorCode !== 0 || parsed_data.errorMessage) return;
-      console.log(data.toString());
-      await this.db_service.processTelemetry(parsed_data);
+      this.logger.log('Receiving data from Thingsboard WebSocket');
+      const parsedData: ITelemetryData = JSON.parse(data.toString());
+      if (parsedData.errorCode !== 0 || parsedData.errorMessage) return;
+      await this.dbService.processTelemetry(parsedData);
     });
 
     this.ws.on('close', async (_, reason) => {
-      console.log(
+      this.logger.log(
         'Disconnected from Thingsboard WebSocket for reason: ',
         reason.toString(),
       );
       switch (reason.toString()) {
         // if JWT has expired, we need to get a new one
         case DISCONNECT_REASONS.JWT_EXPIRED: {
-          console.log('JWT has expired, trying to get newer...');
-          return await this.auth_service.updateAccessToken();
+          this.logger.log('JWT has expired, trying to get newer...');
+          await this.authService.updateAccessToken();
+          return this.connectWebSocket();
         }
       }
-      this.connectWebSocket();
     });
 
     this.ws.on('error', (err) => {
-      console.log('Error connecting to Thingsboard WebSocket: ', err);
+      this.logger.error('Error connecting to Thingsboard WebSocket: ', err);
       // Reconnect to websocket
       this.ws.close();
-      this.connectWebSocket();
     });
   }
 
   private sendMessage(data: string) {
     if (this.ws.readyState === WebSocket.OPEN) {
       this.ws.send(data);
-      return clearInterval(this.interval_id);
+      return clearInterval(this.intervalId);
     } else {
-      console.log(
+      this.logger.log(
         `WebSocket not ready, message not sent, will try it again in ${this.RESEND_TIMEOUT} milliseconds...`,
       );
-      this.interval_id = setInterval(
+      this.intervalId = setInterval(
         () => this.sendMessage(data),
         this.RESEND_TIMEOUT,
       );
