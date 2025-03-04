@@ -18,7 +18,7 @@ import { Medicion } from '@/db/entities/medicion.entity';
       url: process.env.DATABASE_URL,
       entities: [Variable, Medicion],
       autoLoadEntities: true,
-      logging: false,
+      logging: true,
       synchronize: false,
       migrations: ['dist/db/migrations/*{.ts,.js}'],
       migrationsRun: true,
