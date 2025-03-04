@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios, { AxiosInstance } from 'axios';
+import { ENVIROMENT } from '@/constants';
 
 @Injectable()
 export class AxiosConfigService {
@@ -14,7 +15,8 @@ export class AxiosConfigService {
           '⚠️ ERROR: La variable de entorno TB_HOST no está definida.',
         );
       }
-      const prod = this.configService.get<string>('NODE_ENV') === 'production';
+      const prod =
+        this.configService.get<string>('NODE_ENV') === ENVIROMENT.production;
       AxiosConfigService.instance = axios.create({
         baseURL: `${prod ? 'https' : 'http'}://${TB_HOST}/`,
         headers: {
