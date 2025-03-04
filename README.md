@@ -1,4 +1,4 @@
-# ThingsBoard Data Collector
+# ThingsBoard API Data Collector
 
 ## Descripción
 Sistema de recolección de datos que se conecta a ThingsBoard mediante WebSocket para capturar telemetría de PLCs en tiempo real. Los datos son almacenados en PostgreSQL para su posterior uso en el entrenamiento de modelos de IA desarrollados en MatLab.
