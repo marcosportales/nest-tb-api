@@ -1,0 +1,19 @@
+version: '3.5'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: production.Dockerfile
+    restart: always
+    container_name: tesis-api
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./src:/app/src
+    networks:
+      - tesis_default
+
+networks:
+  tesis_default:
+    external: true
