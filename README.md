@@ -14,10 +14,10 @@ Sistema de recolección de datos que se conecta a ThingsBoard mediante WebSocket
 
 ## Tecnologías Utilizadas
 
-- Javascript (NestJS) [NestJS](https://docs.nestjs.com/)
-- ThingsBoard API [ThingsBoard](https://thingsboard.io/docs/)
-- PostgreSQL [PostgreSQL](https://www.postgresql.org/docs/17/index.html)
-- WebSocket NestJS API [WebSocket](https://docs.nestjs.com/websockets/gateways)
+- [Javascript (NestJS)](https://docs.nestjs.com/)
+- [ThingsBoard API](https://thingsboard.io/docs/)
+- [PostgreSQL](https://www.postgresql.org/docs/17/index.html)
+- [WebSocket NestJS API](https://docs.nestjs.com/websockets/gateways)
 
 ## Requisitos Previos
 
