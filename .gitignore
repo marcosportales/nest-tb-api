@@ -14,6 +14,7 @@ lerna-debug.log*
 
 # Locks
 bun.lockb
+package-lock.json
 
 # OS
 .DS_Store
