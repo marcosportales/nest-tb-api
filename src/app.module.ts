@@ -22,7 +22,7 @@ import { Medicion } from '@/db/entities/medicion.entity';
       database: process.env.DB_NAME,
       entities: [Variable, Medicion],
       autoLoadEntities: true,
-      logging: true,
+      logging: false,
       synchronize: false,
       migrations: ['dist/db/migrations/*{.ts,.js}'],
       migrationsRun: true,
