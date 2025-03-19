@@ -50,7 +50,7 @@ export class ThingsboardGateway implements OnGatewayInit {
     this.ws = new WebSocket(this.TB_WS_URL);
 
     this.ws.on('open', () => {
-      this.logger.log('Connected to Thingsboard WebSocket');
+      this.logger.log('Connected to Thingsboard WebSocket!');
       const subscriptionMessage: SubscriptionMessage = {
         tsSubCmds: [
           {
