@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
-import { MedicionesService } from '@/db/mediciones/mediciones.service';
+import { MedicionesService } from '@/db/measurments/measurments.service';
 import { PaginationDto } from '@/db/dto/pagination.dto';
-import { CreateMedicionDto } from '@/db/dto/create-medicion.dto';
+import { CreateMedicionDto } from '@/db/dto/create-measurement.dto';
 
 @Controller('mediciones')
 export class MedicionesController {

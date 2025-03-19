@@ -6,7 +6,7 @@ import {
   Unique,
   Check,
 } from 'typeorm';
-import { Medicion } from './medicion.entity';
+import { Measurement } from './measurement.entity';
 
 @Entity('variables')
 @Unique(['nombre'])
@@ -30,6 +30,8 @@ export class Variable {
   @Column({ type: 'varchar', length: 50, nullable: true })
   structure_name: string;
 
-  @OneToMany(() => Medicion, (medicion) => medicion.variable, { cascade: true })
-  mediciones: Medicion[];
+  @OneToMany(() => Measurement, (measurement) => measurement.variable, {
+    cascade: true,
+  })
+  mediciones: Measurement[];
 }

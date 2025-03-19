@@ -1,8 +1,8 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { Variable } from './variable.entity';
 
-@Entity('mediciones')
-export class Medicion {
+@Entity('measurements')
+export class Measurement {
   @PrimaryColumn()
   variable_id: number;
 

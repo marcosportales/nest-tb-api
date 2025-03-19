@@ -6,7 +6,7 @@ import { AxiosConfigService } from './axios.config';
 import { DbModule } from '@/db/db.module';
 import { AuthModule } from '@/auth/auth.module';
 import { Variable } from '@/db/entities/variable.entity';
-import { Medicion } from '@/db/entities/medicion.entity';
+import { Measurement } from '@/db/entities/measurement.entity';
 
 @Module({
   imports: [
@@ -20,7 +20,7 @@ import { Medicion } from '@/db/entities/medicion.entity';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [Variable, Medicion],
+      entities: [Variable, Measurement],
       autoLoadEntities: true,
       logging: false,
       synchronize: false,

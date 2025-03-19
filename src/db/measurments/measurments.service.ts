@@ -6,19 +6,19 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Medicion } from '@/db/entities/medicion.entity';
+import { Measurement } from '@/db/entities/measurement.entity';
 import { Repository } from 'typeorm';
 import { PaginationDto } from '@/db/dto/pagination.dto';
-import { UpdateMedicionDto } from '@/db/dto/update-medicion.dto';
-import { CreateMedicionDto } from '@/db/dto/create-medicion.dto';
+import { UpdateMedicionDto } from '@/db/dto/update-measurement.dto';
+import { CreateMedicionDto } from '@/db/dto/create-measurement.dto';
 
 @Injectable()
 export class MedicionesService {
   private readonly logger = new Logger('MedicionService');
 
   constructor(
-    @InjectRepository(Medicion)
-    private readonly medicionesRepository: Repository<Medicion>,
+    @InjectRepository(Measurement)
+    private readonly medicionesRepository: Repository<Measurement>,
   ) {}
 
   async findAll(paginationDto: PaginationDto) {

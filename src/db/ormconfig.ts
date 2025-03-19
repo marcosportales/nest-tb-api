@@ -1,5 +1,5 @@
 import { Variable } from '@/db/entities/variable.entity';
-import { Medicion } from '@/db/entities/medicion.entity';
+import { Measurement } from '@/db/entities/measurement.entity';
 import { DataSource } from 'typeorm';
 import * as dotenv from 'dotenv';
 
@@ -12,7 +12,7 @@ export default new DataSource({
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  entities: [Variable, Medicion],
+  entities: [Variable, Measurement],
   synchronize: false,
   migrations: ['dist/db/migrations/*{.ts,.js}'],
   migrationsRun: true,
