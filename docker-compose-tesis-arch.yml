@@ -36,9 +36,13 @@ services:
       - tesis_default
 
   api:
-    image: nest-tb-api-app:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     restart: always
     container_name: tesis-api
+    depends_on:
+      - db
     ports:
       - "3000:3000"
     volumes:
