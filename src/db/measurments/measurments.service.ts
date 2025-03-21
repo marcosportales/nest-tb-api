@@ -13,17 +13,17 @@ import { UpdateMedicionDto } from '@/db/dto/update-measurement.dto';
 import { CreateMedicionDto } from '@/db/dto/create-measurement.dto';
 
 @Injectable()
-export class MedicionesService {
+export class MeasurementsService {
   private readonly logger = new Logger('MedicionService');
 
   constructor(
     @InjectRepository(Measurement)
-    private readonly medicionesRepository: Repository<Measurement>,
+    private readonly measurementsRepository: Repository<Measurement>,
   ) {}
 
   async findAll(paginationDto: PaginationDto) {
     const { offset = 0, limit = 10 } = paginationDto;
-    return await this.medicionesRepository.find({
+    return await this.measurementsRepository.find({
       take: limit,
       skip: offset,
     });
@@ -38,7 +38,7 @@ export class MedicionesService {
     date: string;
     time: string;
   }) {
-    const medicion = await this.medicionesRepository.findOneBy({
+    const medicion = await this.measurementsRepository.findOneBy({
       variable_id: variableId,
       date,
       time,
@@ -52,8 +52,8 @@ export class MedicionesService {
 
   async create(createMedicionDto: CreateMedicionDto) {
     try {
-      const medicion = this.medicionesRepository.create(createMedicionDto);
-      await this.medicionesRepository.save(medicion);
+      const medicion = this.measurementsRepository.create(createMedicionDto);
+      await this.measurementsRepository.save(medicion);
       return medicion;
     } catch (err) {
       this.handleDbExceptions(err);
@@ -67,7 +67,7 @@ export class MedicionesService {
     try {
       const { date, time } = updateMedicionDto;
 
-      let medicion = await this.medicionesRepository.findOneBy({
+      let medicion = await this.measurementsRepository.findOneBy({
         variable_id: variableId,
         date,
         time,
@@ -75,12 +75,12 @@ export class MedicionesService {
 
       if (medicion) return;
 
-      medicion = this.medicionesRepository.create({
+      medicion = this.measurementsRepository.create({
         variable_id: variableId,
         ...updateMedicionDto,
       });
 
-      return await this.medicionesRepository.save(medicion);
+      return await this.measurementsRepository.save(medicion);
     } catch (err) {
       this.handleDbExceptions(err);
     }

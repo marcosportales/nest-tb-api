@@ -33,5 +33,5 @@ export class Variable {
   @OneToMany(() => Measurement, (measurement) => measurement.variable, {
     cascade: true,
   })
-  mediciones: Measurement[];
+  measurements: Measurement[];
 }
