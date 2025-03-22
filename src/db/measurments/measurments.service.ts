@@ -95,7 +95,7 @@ export class MeasurementsService {
     variableId: number,
     paginationDto: PaginationDto,
   ) {
-    const { limit, offset } = paginationDto;
+    const { limit = 10, offset = 0 } = paginationDto;
 
     const [measurements] = await this.measurementsRepository.findAndCount({
       where: { variable_id: variableId },
