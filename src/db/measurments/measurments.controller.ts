@@ -1,19 +1,19 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
-import { MedicionesService } from '@/db/measurments/measurments.service';
+import { MeasurementsService } from '@/db/measurments/measurments.service';
 import { PaginationDto } from '@/db/dto/pagination.dto';
 import { CreateMedicionDto } from '@/db/dto/create-measurement.dto';
 
 @Controller('mediciones')
-export class MedicionesController {
-  constructor(private readonly medicionesService: MedicionesService) {}
+export class MeasurementsController {
+  constructor(private readonly measurementsService: MeasurementsService) {}
 
   @Get()
   async getAll(@Query() queryParams: PaginationDto) {
-    return this.medicionesService.findAll(queryParams);
+    return this.measurementsService.findAll(queryParams);
   }
 
   @Post()
   async create(@Body() createMedicionDto: CreateMedicionDto) {
-    return this.medicionesService.create(createMedicionDto);
+    return this.measurementsService.create(createMedicionDto);
   }
 }

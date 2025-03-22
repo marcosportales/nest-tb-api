@@ -1,16 +1,16 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ITelemetryData } from '@/ws/dto/telemetry_data.dto';
-import { MedicionesService } from '@/db/measurments/measurments.service';
+import { MeasurementsService } from '@/db/measurments/measurments.service';
 import { VariablesService } from '@/db/variables/variables.service';
 import { CreateVariableDto } from '@/db/dto/create-variable.dto';
-import { UpdateMedicionDto } from '@/db/dto/update-measurement.dto';
+import { UpdateMeasurementDto } from '@/db/dto/update-measurement.dto';
 
 @Injectable()
 export class DbService {
   private readonly logger = new Logger('DbService');
 
   constructor(
-    private readonly measurementsService: MedicionesService,
+    private readonly measurementsService: MeasurementsService,
     private readonly variablesService: VariablesService,
   ) {}
 
@@ -42,7 +42,7 @@ export class DbService {
         value,
         date,
         time,
-      } as UpdateMedicionDto);
+      } as UpdateMeasurementDto);
     });
 
     await Promise.all(medicionPromises);

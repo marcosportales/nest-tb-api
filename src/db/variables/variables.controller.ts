@@ -27,6 +27,17 @@ export class VariablesController {
     return this.variablesService.findOne(id);
   }
 
+  @Get(':id/measurements')
+  async findAllTelemetries(
+    @Param('id', ParseIntPipe) id: number,
+    @Query() paginationDto: PaginationDto,
+  ) {
+    return this.variablesService.findMeasurementsByVariableId(
+      id,
+      paginationDto,
+    );
+  }
+
   @Post()
   async create(@Body() createVariableDto: CreateVariableDto) {
     return this.variablesService.create(createVariableDto);

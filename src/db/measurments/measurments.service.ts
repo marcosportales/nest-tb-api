@@ -1,24 +1,29 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   InternalServerErrorException,
   Logger,
   NotFoundException,
+  forwardRef,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Measurement } from '@/db/entities/measurement.entity';
 import { Repository } from 'typeorm';
 import { PaginationDto } from '@/db/dto/pagination.dto';
-import { UpdateMedicionDto } from '@/db/dto/update-measurement.dto';
+import { UpdateMeasurementDto } from '@/db/dto/update-measurement.dto';
 import { CreateMedicionDto } from '@/db/dto/create-measurement.dto';
+import { VariablesService } from '@/db/variables/variables.service';
 
 @Injectable()
 export class MeasurementsService {
-  private readonly logger = new Logger('MedicionService');
+  private readonly logger = new Logger('MeasurementsService');
 
   constructor(
     @InjectRepository(Measurement)
     private readonly measurementsRepository: Repository<Measurement>,
+    @Inject(forwardRef(() => VariablesService))
+    private readonly variablesService: VariablesService,
   ) {}
 
   async findAll(paginationDto: PaginationDto) {
@@ -63,7 +68,7 @@ export class MeasurementsService {
   /**
    * Busca si existe una medición y si no existe la crea.
    */
-  async update(variableId: number, updateMedicionDto: UpdateMedicionDto) {
+  async update(variableId: number, updateMedicionDto: UpdateMeasurementDto) {
     try {
       const { date, time } = updateMedicionDto;
 
@@ -84,6 +89,21 @@ export class MeasurementsService {
     } catch (err) {
       this.handleDbExceptions(err);
     }
+  }
+
+  async findMeasurementsByVariableId(
+    variableId: number,
+    paginationDto: PaginationDto,
+  ) {
+    const { limit, offset } = paginationDto;
+
+    const [measurements] = await this.measurementsRepository.findAndCount({
+      where: { variable_id: variableId },
+      take: limit,
+      skip: offset,
+    });
+
+    return measurements;
   }
 
   private handleDbExceptions(err: any) {

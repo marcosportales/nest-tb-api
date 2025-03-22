@@ -15,7 +15,7 @@ export class Measurement {
   @Column({ type: 'jsonb' })
   value: string | number | boolean;
 
-  @ManyToOne(() => Variable, (variable) => variable.mediciones)
+  @ManyToOne(() => Variable, (variable) => variable.measurements)
   @JoinColumn({ name: 'variable_id' })
   variable: Variable;
 }

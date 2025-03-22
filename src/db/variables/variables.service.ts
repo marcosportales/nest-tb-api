@@ -1,9 +1,11 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   InternalServerErrorException,
   Logger,
   NotFoundException,
+  forwardRef,
 } from '@nestjs/common';
 import { Variable } from '@/db/entities/variable.entity';
 import { Repository } from 'typeorm';
@@ -11,7 +13,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationDto } from '@/db/dto/pagination.dto';
 import { CreateVariableDto } from '@/db/dto/create-variable.dto';
 import { UpdateVariableDto } from '@/db/dto/update-variable.dto';
-import { MedicionesService } from '../measurments/measurments.service';
+import { MeasurementsService } from '@/db/measurments/measurments.service';
 
 @Injectable()
 export class VariablesService {
@@ -20,7 +22,8 @@ export class VariablesService {
   constructor(
     @InjectRepository(Variable)
     private readonly variablesRepository: Repository<Variable>,
-    private readonly measurementsService: MedicionesService
+    @Inject(forwardRef(() => MeasurementsService))
+    private readonly measurementsService: MeasurementsService,
   ) {}
 
   async findAll(queryParams: PaginationDto): Promise<Variable[]> {
@@ -39,7 +42,7 @@ export class VariablesService {
 
     return variable;
   }
-  /** 
+  /**
    * Si no se encuentra la variable y no es externa, se devuelve el nombre de la variable
     para saber en el metodo processTelemetry de DbService que no se encontro la variable
     sino se lanza una excepcion (e.g si se llama desde el controlador)
@@ -83,15 +86,20 @@ export class VariablesService {
   /**
    * Devuelve la telemetria de una variable
    **/
-  async findAllTelemetries(id: number, paginationDto: PaginationDto) {
+  async findMeasurementsByVariableId(id: number, paginationDto: PaginationDto) {
     const variable = await this.variablesRepository.findOneBy({ id });
 
     if (!variable) {
       throw new NotFoundException(`Variable with id: ${id} not found`);
     }
 
-    const { limit, offset } = paginationDto;
-    const measurements = await this.measurementsService.
+    const measurements =
+      await this.measurementsService.findMeasurementsByVariableId(
+        id,
+        paginationDto,
+      );
+
+    return measurements;
   }
 
   private handleDbExceptions(err: any) {
