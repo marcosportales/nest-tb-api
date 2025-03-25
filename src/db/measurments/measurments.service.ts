@@ -22,12 +22,11 @@ export class MeasurementsService {
   constructor(
     @InjectRepository(Measurement)
     private readonly measurementsRepository: Repository<Measurement>,
-    @Inject(forwardRef(() => VariablesService))
-    private readonly variablesService: VariablesService,
   ) {}
 
   async findAll(paginationDto: PaginationDto) {
-    const { offset = 0, limit = 10 } = paginationDto;
+    const { offset, limit } = paginationDto;
+
     return await this.measurementsRepository.find({
       take: limit,
       skip: offset,
@@ -55,6 +54,9 @@ export class MeasurementsService {
       );
   }
 
+  /**
+   * Create new measurement
+   */
   async create(createMedicionDto: CreateMedicionDto) {
     try {
       const medicion = this.measurementsRepository.create(createMedicionDto);
@@ -95,7 +97,7 @@ export class MeasurementsService {
     variableId: number,
     paginationDto: PaginationDto,
   ) {
-    const { limit = 10, offset = 0 } = paginationDto;
+    const { limit, offset } = paginationDto;
 
     const [measurements] = await this.measurementsRepository.findAndCount({
       where: { variable_id: variableId },
