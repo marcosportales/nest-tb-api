@@ -10,11 +10,12 @@ export class CreateVariableDto {
 
   @IsOptional()
   @IsString()
+  @IsIn(['analogic', 'digital'])
   signal_type?: string;
 
   @IsOptional()
   @IsString()
-  @IsIn(['I', 'O'])
+  @IsIn(['input', 'output'])
   io_type?: string;
 
   @IsOptional()
