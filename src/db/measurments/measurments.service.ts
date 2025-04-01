@@ -1,11 +1,9 @@
 import {
   BadRequestException,
-  Inject,
   Injectable,
   InternalServerErrorException,
   Logger,
   NotFoundException,
-  forwardRef,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Measurement } from '@/db/entities/measurement.entity';
@@ -13,7 +11,6 @@ import { Repository } from 'typeorm';
 import { PaginationDto } from '@/db/dto/pagination.dto';
 import { UpdateMeasurementDto } from '@/db/dto/update-measurement.dto';
 import { CreateMedicionDto } from '@/db/dto/create-measurement.dto';
-import { VariablesService } from '@/db/variables/variables.service';
 
 @Injectable()
 export class MeasurementsService {
@@ -28,6 +25,16 @@ export class MeasurementsService {
     const { offset, limit } = paginationDto;
 
     return await this.measurementsRepository.find({
+      select: {
+        variable: {
+          structure_name: true,
+        },
+        date: true,
+        time: true,
+        value: true,
+        variable_id: true,
+      },
+      relations: { variable: true },
       take: limit,
       skip: offset,
     });
