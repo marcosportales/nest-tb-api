@@ -27,7 +27,7 @@ export class MeasurementsService {
     return await this.measurementsRepository.find({
       select: {
         variable: {
-          structure_name: true,
+          nombre: true,
         },
         date: true,
         time: true,
