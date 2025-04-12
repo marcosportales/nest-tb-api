@@ -14,7 +14,7 @@ export class CreateVariablesTable1740875362592 implements MigrationInterface {
             generationStrategy: 'increment',
           },
           {
-            name: 'name',
+            name: 'nombre',
             type: 'varchar',
             length: '50',
             isUnique: true,
@@ -31,13 +31,14 @@ export class CreateVariablesTable1740875362592 implements MigrationInterface {
             type: 'varchar',
             length: '30',
             isNullable: true,
+            enum: ['analogical', 'digital'],
           },
           {
             name: 'io_type',
-            type: 'char',
-            length: '1',
+            type: 'varchar',
+            length: '6',
             isNullable: true,
-            enum: ['I', 'O'],
+            enum: ['input', 'output'],
           },
           {
             name: 'structure_name',

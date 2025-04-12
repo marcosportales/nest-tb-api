@@ -9,7 +9,7 @@ export class CreateMedicionesTable1740876480307 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'mediciones',
+        name: 'measurements',
         columns: [
           {
             name: 'variable_id',
@@ -39,7 +39,7 @@ export class CreateMedicionesTable1740876480307 implements MigrationInterface {
     );
 
     await queryRunner.createForeignKey(
-      'mediciones',
+      'measurements',
       new TableForeignKey({
         columnNames: ['variable_id'],
         referencedColumnNames: ['id'],
@@ -49,6 +49,6 @@ export class CreateMedicionesTable1740876480307 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query('DROP table mediciones');
+    await queryRunner.query('DROP table measurements');
   }
 }
