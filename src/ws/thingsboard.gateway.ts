@@ -90,7 +90,6 @@ export class ThingsboardGateway implements OnGatewayInit {
 
     this.ws.on('error', (err) => {
       this.logger.error('Error connecting to Thingsboard WebSocket: ', err);
-      // Reconnect to websocket
       this.ws.close();
     });
   }
