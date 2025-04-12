@@ -27,7 +27,7 @@ export class VariablesService {
   ) {}
 
   async findAll(queryParams: PaginationDto): Promise<Variable[]> {
-    const { offset = 0, limit = 10 } = queryParams;
+    const { offset = 0, limit } = queryParams;
     return await this.variablesRepository.find({
       take: limit,
       skip: offset,
