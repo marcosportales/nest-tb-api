@@ -32,19 +32,21 @@ export class DbService {
       }),
     );
 
-    const medicionPromises = Object.entries(data).map(([variable, values]) => {
-      const [timestamp, value] = values.flat();
-      const telemetryDatetime = new Date(timestamp);
-      const date = telemetryDatetime.toISOString().split('T')[0];
-      const time = telemetryDatetime.toTimeString().split(' ')[0];
+    const measurementPromises = Object.entries(data).map(
+      ([variable, values]) => {
+        const [timestamp, value] = values.flat();
+        const telemetryDatetime = new Date(timestamp);
+        const date = telemetryDatetime.toISOString().split('T')[0];
+        const time = telemetryDatetime.toTimeString().split(' ')[0];
 
-      return this.measurementsService.update(variablesMap.get(variable), {
-        value,
-        date,
-        time,
-      } as UpdateMeasurementDto);
-    });
+        return this.measurementsService.update(variablesMap.get(variable), {
+          value,
+          date,
+          time,
+        } as UpdateMeasurementDto);
+      },
+    );
 
-    await Promise.all(medicionPromises);
+    await Promise.all(measurementPromises);
   }
 }

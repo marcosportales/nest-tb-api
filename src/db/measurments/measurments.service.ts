@@ -49,26 +49,27 @@ export class MeasurementsService {
     date: string;
     time: string;
   }) {
-    const medicion = await this.measurementsRepository.findOneBy({
+    const measurement = await this.measurementsRepository.findOneBy({
       variable_id: variableId,
       date,
       time,
     });
 
-    if (!medicion)
+    if (!measurement)
       throw new NotFoundException(
-        `Medicion with id: ${variableId}, date: ${date}, time: ${time} not found`,
+        `Measurement with id: ${variableId}, date: ${date}, time: ${time} not found`,
       );
   }
 
   /**
    * Create new measurement
    */
-  async create(createMedicionDto: CreateMeasurementDto) {
+  async create(createMeasurementDto: CreateMeasurementDto) {
     try {
-      const medicion = this.measurementsRepository.create(createMedicionDto);
-      await this.measurementsRepository.save(medicion);
-      return medicion;
+      const measurement =
+        this.measurementsRepository.create(createMeasurementDto);
+      await this.measurementsRepository.save(measurement);
+      return measurement;
     } catch (err) {
       this.handleDbExceptions(err);
     }
@@ -77,24 +78,24 @@ export class MeasurementsService {
   /**
    * Busca si existe una medición y si no existe la crea.
    */
-  async update(variableId: number, updateMedicionDto: UpdateMeasurementDto) {
+  async update(variableId: number, updateMeasurementDto: UpdateMeasurementDto) {
     try {
-      const { date, time } = updateMedicionDto;
+      const { date, time } = updateMeasurementDto;
 
-      let medicion = await this.measurementsRepository.findOneBy({
+      let measurement = await this.measurementsRepository.findOneBy({
         variable_id: variableId,
         date,
         time,
       });
 
-      if (medicion) return;
+      if (measurement) return;
 
-      medicion = this.measurementsRepository.create({
+      measurement = this.measurementsRepository.create({
         variable_id: variableId,
-        ...updateMedicionDto,
+        ...updateMeasurementDto,
       });
 
-      return await this.measurementsRepository.save(medicion);
+      return await this.measurementsRepository.save(measurement);
     } catch (err) {
       this.handleDbExceptions(err);
     }
