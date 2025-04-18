@@ -6,7 +6,7 @@ import {
   IsString,
 } from 'class-validator';
 
-export class CreateMedicionDto {
+export class CreateMeasurementDto {
   @IsNumber()
   @IsPositive()
   variable_id: number;

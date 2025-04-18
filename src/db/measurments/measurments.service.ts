@@ -10,7 +10,7 @@ import { Measurement } from '@/db/entities/measurement.entity';
 import { Repository } from 'typeorm';
 import { PaginationDto } from '@/db/dto/pagination.dto';
 import { UpdateMeasurementDto } from '@/db/dto/update-measurement.dto';
-import { CreateMedicionDto } from '@/db/dto/create-measurement.dto';
+import { CreateMeasurementDto } from '@/db/dto/create-measurement.dto';
 
 @Injectable()
 export class MeasurementsService {
@@ -64,7 +64,7 @@ export class MeasurementsService {
   /**
    * Create new measurement
    */
-  async create(createMedicionDto: CreateMedicionDto) {
+  async create(createMedicionDto: CreateMeasurementDto) {
     try {
       const medicion = this.measurementsRepository.create(createMedicionDto);
       await this.measurementsRepository.save(medicion);

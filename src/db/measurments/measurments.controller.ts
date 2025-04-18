@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { MeasurementsService } from '@/db/measurments/measurments.service';
 import { PaginationDto } from '@/db/dto/pagination.dto';
-import { CreateMedicionDto } from '@/db/dto/create-measurement.dto';
+import { CreateMeasurementDto } from '@/db/dto/create-measurement.dto';
 
 @Controller('measurements')
 export class MeasurementsController {
@@ -13,7 +13,7 @@ export class MeasurementsController {
   }
 
   @Post()
-  async create(@Body() createMedicionDto: CreateMedicionDto) {
-    return this.measurementsService.create(createMedicionDto);
+  async create(@Body() createMeasurementDto: CreateMeasurementDto) {
+    return this.measurementsService.create(createMeasurementDto);
   }
 }
