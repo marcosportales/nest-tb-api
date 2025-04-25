@@ -4,6 +4,7 @@ import {
   InternalServerErrorException,
   Logger,
   NotFoundException,
+  StreamableFile,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Measurement } from '@/db/entities/measurement.entity';
@@ -11,6 +12,7 @@ import { Repository } from 'typeorm';
 import { PaginationDto } from '@/db/dto/pagination.dto';
 import { UpdateMeasurementDto } from '@/db/dto/update-measurement.dto';
 import { CreateMeasurementDto } from '@/db/dto/create-measurement.dto';
+import { asString, generateCsv, mkConfig } from 'export-to-csv';
 
 @Injectable()
 export class MeasurementsService {
@@ -114,6 +116,30 @@ export class MeasurementsService {
     });
 
     return measurements;
+  }
+
+  /**
+   * Exporta las mediciones en formato CSV
+   * @param paginationDto PaginationDto
+   * @returns Promise<byte[]>
+   */
+  async exportToCsv(paginationDto: PaginationDto) {
+    try {
+      const measurements = await this.findAll(paginationDto);
+      const csvConfig = mkConfig({ useKeysAsHeaders: true });
+      const csvData = measurements.map(({ variable, date, ...m }) => ({
+        ...m,
+        date: date.toString(),
+        variable_name: variable.nombre,
+      }));
+      const csv = generateCsv(csvConfig)(
+        csvData as unknown as Record<string, any>[],
+      );
+      const csvInByteArr = new Uint8Array(Buffer.from(asString(csv), 'utf-8'));
+      return new StreamableFile(csvInByteArr);
+    } catch (err) {
+      this.handleDbExceptions(err);
+    }
   }
 
   private handleDbExceptions(err: any) {
