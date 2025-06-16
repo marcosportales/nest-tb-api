@@ -1,11 +1,11 @@
 import {
   BadRequestException,
+  forwardRef,
   Inject,
   Injectable,
   InternalServerErrorException,
   Logger,
   NotFoundException,
-  forwardRef,
 } from '@nestjs/common';
 import { Variable } from '@/db/entities/variable.entity';
 import { Repository } from 'typeorm';
@@ -42,11 +42,12 @@ export class VariablesService {
 
     return variable;
   }
+
   /**
    * Si no se encuentra la variable y no es externa, se devuelve el nombre de la variable
-    para saber en el metodo processTelemetry de DbService que no se encontro la variable
-    sino se lanza una excepcion (e.g si se llama desde el controlador)
-  **/
+   para saber en el metodo processTelemetry de DbService que no se encontro la variable
+   sino se lanza una excepcion (e.g si se llama desde el controlador)
+   **/
   async findOneByName(nombre: string, external = true) {
     const variable = await this.variablesRepository.findOneBy({ nombre });
     if (!variable) {
@@ -93,13 +94,10 @@ export class VariablesService {
       throw new NotFoundException(`Variable with id: ${id} not found`);
     }
 
-    const measurements =
-      await this.measurementsService.findMeasurementsByVariableId(
-        id,
-        paginationDto,
-      );
-
-    return measurements;
+    return await this.measurementsService.findMeasurementsByVariableId(
+      id,
+      paginationDto,
+    );
   }
 
   private handleDbExceptions(err: any) {
