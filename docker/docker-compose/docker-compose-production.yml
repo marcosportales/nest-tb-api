@@ -4,7 +4,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: production.Dockerfile
+      dockerfile: ../production.Dockerfile
     restart: always
     container_name: tesis-api
     ports:

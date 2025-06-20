@@ -38,7 +38,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ../production.Dockerfile
     restart: always
     container_name: tesis-api
     depends_on:
@@ -47,6 +47,17 @@ services:
       - "3000:3000"
     volumes:
       - ./src:/app/src
+    networks:
+      - tesis_default
+      
+  web:
+    build:
+      context: ../../Front/tb-front/
+      dockerfile: Dockerfile
+    restart: always
+    container_name: tesis-web
+    ports:
+      - "5173:5173"
     networks:
       - tesis_default
 
