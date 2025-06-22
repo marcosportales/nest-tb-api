@@ -1,9 +1,7 @@
 import {
-  BadRequestException,
   forwardRef,
   Inject,
   Injectable,
-  InternalServerErrorException,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
@@ -14,6 +12,7 @@ import { PaginationDto } from '@/db/dto/pagination.dto';
 import { CreateVariableDto } from '@/db/dto/create-variable.dto';
 import { UpdateVariableDto } from '@/db/dto/update-variable.dto';
 import { MeasurementsService } from '@/db/measurments/measurments.service';
+import { handleDbExceptions } from '@/utils/handle-db-exceptions';
 
 @Injectable()
 export class VariablesService {
@@ -63,7 +62,7 @@ export class VariablesService {
       await this.variablesRepository.save(variable);
       return variable;
     } catch (err) {
-      this.handleDbExceptions(err);
+      handleDbExceptions(err);
     }
   }
 
@@ -80,7 +79,7 @@ export class VariablesService {
       await this.variablesRepository.save(variable);
       return variable;
     } catch (err) {
-      this.handleDbExceptions(err);
+      handleDbExceptions(err);
     }
   }
 
@@ -97,14 +96,6 @@ export class VariablesService {
     return await this.measurementsService.findMeasurementsByVariableId(
       id,
       paginationDto,
-    );
-  }
-
-  private handleDbExceptions(err: any) {
-    if (err.code === '23505') throw new BadRequestException(err.detail);
-    this.logger.error(err.message);
-    throw new InternalServerErrorException(
-      'Unexpected error, check server logs',
     );
   }
 }

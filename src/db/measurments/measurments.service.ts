@@ -1,7 +1,5 @@
 import {
-  BadRequestException,
   Injectable,
-  InternalServerErrorException,
   Logger,
   NotFoundException,
   StreamableFile,
@@ -14,6 +12,7 @@ import { UpdateMeasurementDto } from '@/db/dto/update-measurement.dto';
 import { CreateMeasurementDto } from '@/db/dto/create-measurement.dto';
 import { asString, generateCsv, mkConfig } from 'export-to-csv';
 import { Variable } from '../entities/variable.entity';
+import { handleDbExceptions } from '@/utils/handle-db-exceptions';
 
 @Injectable()
 export class MeasurementsService {
@@ -76,7 +75,7 @@ export class MeasurementsService {
       await this.measurementsRepository.save(measurement);
       return measurement;
     } catch (err) {
-      this.handleDbExceptions(err);
+      handleDbExceptions(err);
     }
   }
 
@@ -102,7 +101,7 @@ export class MeasurementsService {
 
       return await this.measurementsRepository.save(measurement);
     } catch (err) {
-      this.handleDbExceptions(err);
+      handleDbExceptions(err);
     }
   }
 
@@ -141,7 +140,7 @@ export class MeasurementsService {
       const csvInByteArr = new Uint8Array(Buffer.from(asString(csv), 'utf-8'));
       return new StreamableFile(csvInByteArr);
     } catch (err) {
-      this.handleDbExceptions(err);
+      handleDbExceptions(err);
     }
   }
 
@@ -149,7 +148,8 @@ export class MeasurementsService {
    * Obtiene la ultima telemetria de cada variable
    */
   async getLatests() {
-    const query = `
+    try {
+      const query = `
     SELECT 
       v.id,
       v.nombre as name,
@@ -169,14 +169,9 @@ export class MeasurementsService {
     ) m ON true
   `;
 
-    return await this.variablesRepository.query(query);
-  }
-
-  private handleDbExceptions(err: any) {
-    if (err.code === '23505') throw new BadRequestException(err.detail);
-    this.logger.error(err.message);
-    throw new InternalServerErrorException(
-      'Unexpected error, check server logs',
-    );
+      return await this.variablesRepository.query(query);
+    } catch (err) {
+      handleDbExceptions(err);
+    }
   }
 }
