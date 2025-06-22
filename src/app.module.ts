@@ -7,6 +7,7 @@ import { DbModule } from '@/db/db.module';
 import { AuthModule } from '@/auth/auth.module';
 import { Variable } from '@/db/entities/variable.entity';
 import { Measurement } from '@/db/entities/measurement.entity';
+import { Prediction } from '@/db/entities/prediction.entity';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { Measurement } from '@/db/entities/measurement.entity';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [Variable, Measurement],
+      entities: [Variable, Measurement, Prediction],
       autoLoadEntities: true,
       logging: false,
       synchronize: false,

@@ -23,4 +23,9 @@ export class MeasurementsController {
   async exportToCsv(@Query() paginationDto: PaginationDto) {
     return this.measurementsService.exportToCsv(paginationDto);
   }
+
+  @Get('/latests')
+  async getLatests() {
+    return this.measurementsService.getLatests();
+  }
 }

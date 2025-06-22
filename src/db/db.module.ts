@@ -7,11 +7,23 @@ import { Measurement } from '@/db/entities/measurement.entity';
 import { Variable } from '@/db/entities/variable.entity';
 import { VariablesController } from '@/db/variables/variables.controller';
 import { MeasurementsController } from '@/db/measurments/measurments.controller';
+import { PredictionsController } from '@/db/predictions/predictions.controller';
+import { Prediction } from '@/db/entities/prediction.entity';
+import { PredictionsService } from '@/db/predictions/predictions.service';
 
 @Module({
-  controllers: [MeasurementsController, VariablesController],
-  imports: [TypeOrmModule.forFeature([Variable, Measurement])],
-  providers: [DbService, VariablesService, MeasurementsService],
+  controllers: [
+    MeasurementsController,
+    VariablesController,
+    PredictionsController,
+  ],
+  imports: [TypeOrmModule.forFeature([Variable, Measurement, Prediction])],
+  providers: [
+    DbService,
+    VariablesService,
+    MeasurementsService,
+    PredictionsService,
+  ],
   exports: [VariablesService, MeasurementsService, DbService],
 })
 export class DbModule {}

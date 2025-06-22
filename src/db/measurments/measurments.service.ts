@@ -13,6 +13,7 @@ import { PaginationDto } from '@/db/dto/pagination.dto';
 import { UpdateMeasurementDto } from '@/db/dto/update-measurement.dto';
 import { CreateMeasurementDto } from '@/db/dto/create-measurement.dto';
 import { asString, generateCsv, mkConfig } from 'export-to-csv';
+import { Variable } from '../entities/variable.entity';
 
 @Injectable()
 export class MeasurementsService {
@@ -21,6 +22,8 @@ export class MeasurementsService {
   constructor(
     @InjectRepository(Measurement)
     private readonly measurementsRepository: Repository<Measurement>,
+    @InjectRepository(Variable)
+    private readonly variablesRepository: Repository<Variable>,
   ) {}
 
   async findAll(paginationDto: PaginationDto) {
@@ -140,6 +143,33 @@ export class MeasurementsService {
     } catch (err) {
       this.handleDbExceptions(err);
     }
+  }
+
+  /**
+   * Obtiene la ultima telemetria de cada variable
+   */
+  async getLatests() {
+    const query = `
+    SELECT 
+      v.id,
+      v.nombre as name,
+      m.date,
+      m.time,
+      m.value
+    FROM variables v
+    LEFT JOIN LATERAL (
+      SELECT 
+        m.date,
+        m.time,
+        m.value
+      FROM measurements m
+      WHERE m.variable_id = v.id
+      ORDER BY m.date DESC, m.time DESC
+      LIMIT 1
+    ) m ON true
+  `;
+
+    return await this.variablesRepository.query(query);
   }
 
   private handleDbExceptions(err: any) {
