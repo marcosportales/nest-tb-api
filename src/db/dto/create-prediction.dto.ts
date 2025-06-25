@@ -1,20 +1,14 @@
-import { IsNumber } from 'class-validator';
+import { IsDateString, IsNumber, IsString } from 'class-validator';
 
 export class CreatePredictionDto {
-  @IsNumber()
-  intern_temperature: number;
+  @IsDateString()
+  date: string;
 
-  @IsNumber()
-  input_temperature: number;
+  @IsString()
+  time: string;
 
-  @IsNumber()
-  output_temperature: number;
-
-  @IsNumber()
-  chimney_temperature: number;
-
-  @IsNumber()
-  fan_speed: number;
+  @IsString()
+  name: string;
 
   @IsNumber()
   predicted_value: number;
