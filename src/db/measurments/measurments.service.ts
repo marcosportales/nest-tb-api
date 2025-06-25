@@ -151,7 +151,6 @@ export class MeasurementsService {
     try {
       const query = `
     SELECT 
-      v.id,
       v.nombre as name,
       m.date,
       m.time,
