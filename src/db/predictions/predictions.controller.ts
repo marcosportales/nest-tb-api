@@ -7,7 +7,9 @@ export class PredictionsController {
   constructor(private readonly predictionsService: PredictionsService) {}
 
   @Post('')
-  async create(@Body() createPredictionDto: CreatePredictionDto) {
-    return this.predictionsService.create(createPredictionDto);
+  async create(
+    @Body('predictions') createPredictionsDto: CreatePredictionDto[],
+  ) {
+    return this.predictionsService.create(createPredictionsDto);
   }
 }
