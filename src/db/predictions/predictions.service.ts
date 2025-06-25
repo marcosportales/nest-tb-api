@@ -14,10 +14,19 @@ export class PredictionsService {
     private readonly predictionsRepository: Repository<Prediction>,
   ) {}
 
-  async create(createPredictionDto: CreatePredictionDto) {
+  async create(createPredictionsDto: CreatePredictionDto[]) {
     try {
-      const prediction = this.predictionsRepository.create(createPredictionDto);
-      await this.predictionsRepository.save(prediction);
+      const predictions = createPredictionsDto.map((dto) =>
+        this.predictionsRepository.create({
+          ...dto,
+          date: dto.date.split('T')[0],
+          // Por ahora se transforma a entero
+          predicted_value: Math.trunc(dto.predicted_value),
+        }),
+      );
+
+      await this.predictionsRepository.save(predictions);
+      return predictions;
     } catch (err) {
       handleDbExceptions(err);
     }
