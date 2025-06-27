@@ -2,7 +2,7 @@ import { OnGatewayInit, WebSocketGateway } from '@nestjs/websockets';
 import * as WebSocket from 'ws';
 import { ConfigService } from '@nestjs/config';
 import { ITelemetryData } from '@/ws/dto/telemetry_data.dto';
-import { DISCONNECT_REASONS, ENVIROMENT } from '@/constants';
+import { DISCONNECT_REASONS, ENVIRONMENT } from '@/constants';
 import { AuthService } from '@/auth/auth.service';
 import { DbService } from '@/db/db.service';
 import { Logger } from '@nestjs/common';
@@ -39,7 +39,7 @@ export class ThingsboardGateway implements OnGatewayInit {
     this.TB_DEVICE_ID = this.configService.get<string>('TB_DEVICE_ID');
     this.RESEND_TIMEOUT = this.configService.get<number>('RESEND_TIMEOUT');
     const NODE_ENV = this.configService.get<string>('NODE_ENV');
-    const PROTOCOL = NODE_ENV === ENVIROMENT.production ? 'wss' : 'ws';
+    const PROTOCOL = NODE_ENV === ENVIRONMENT.production ? 'wss' : 'ws';
     // before start connection generates a JWT
     const accessToken = await this.authService.updateAccessToken();
     this.TB_WS_URL = `${PROTOCOL}://${TB_HOST}/api/ws/plugins/telemetry?token=${accessToken}`;
