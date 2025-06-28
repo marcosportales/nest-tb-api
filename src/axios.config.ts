@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios, { AxiosInstance } from 'axios';
-import { ENVIROMENT } from '@/constants';
+import { ENVIRONMENT } from '@/constants';
 
 @Injectable()
 export class AxiosConfigService {
@@ -16,7 +16,7 @@ export class AxiosConfigService {
         );
       }
       const prod =
-        this.configService.get<string>('NODE_ENV') === ENVIROMENT.production;
+        this.configService.get<string>('NODE_ENV') === ENVIRONMENT.production;
       AxiosConfigService.instance = axios.create({
         baseURL: `${prod ? 'https' : 'http'}://${TB_HOST}/`,
         headers: {
