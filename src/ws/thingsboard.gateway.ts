@@ -70,7 +70,9 @@ export class ThingsboardGateway implements OnGatewayInit {
       const parsedData: ITelemetryData = JSON.parse(data.toString());
       if (parsedData.errorCode !== 0 || parsedData.errorMessage) return;
       this.logger.log(JSON.stringify(parsedData));
+
       await this.dbService.processTelemetry(parsedData);
+      await this.dbService.sendTelemetryToModel(parsedData);
     });
 
     this.ws.on('close', async (_, reason) => {
