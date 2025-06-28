@@ -1,4 +1,4 @@
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { ITelemetryData } from '@/ws/dto/telemetry_data.dto';
 import { MeasurementsService } from '@/db/measurments/measurments.service';
@@ -6,6 +6,7 @@ import { VariablesService } from '@/db/variables/variables.service';
 import { CreateVariableDto } from '@/db/dto/create-variable.dto';
 import { UpdateMeasurementDto } from '@/db/dto/update-measurement.dto';
 import { ConfigService } from '@nestjs/config';
+import { handleDbExceptions } from '@/utils/handle-db-exceptions';
 
 @Injectable()
 export class DbService {
@@ -54,16 +55,24 @@ export class DbService {
   }
 
   async sendTelemetryToModel(telemetryData: ITelemetryData) {
-    this.logger.log('Send telemetry to ai model for prediction...');
-
     try {
       const MODEL_API_URL = this.configService.get<string>('MODEL_API_URL');
+      if (!MODEL_API_URL) {
+        this.logger.log('MODEL_API_URL is not defined in the environment.');
+        return;
+      }
+
       const { data } = telemetryData;
       if (!Object.keys(data).length) return;
-      return axios.post(`${MODEL_API_URL}/get-telemetry`, { data });
+      this.logger.log('Send telemetry to ai model for prediction...');
+
+      axios.post(`${MODEL_API_URL}/validation`, { data }).catch((err) => {
+        this.logger.error(err);
+      });
+      this.logger.log('Telemetry successfully sent to ai model.');
     } catch (err) {
-      if (err instanceof AxiosError) return {};
-      return {};
+      this.logger.error(err);
+      handleDbExceptions(err);
     }
   }
 }
