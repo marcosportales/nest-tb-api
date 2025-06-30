@@ -15,6 +15,7 @@ export interface SubscriptionMessage {
     type: string;
     cmdId: number;
     tsStart?: number;
+    key?: string;
   }>;
   historyCmd?: Array<any>;
 }
