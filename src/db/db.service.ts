@@ -64,12 +64,18 @@ export class DbService {
 
       const { data } = telemetryData;
       if (!Object.keys(data).length) return;
-      this.logger.log('Send telemetry to ai model for prediction...');
+      this.logger.log('Sending telemetry to ai model for prediction...');
 
-      axios.post(`${MODEL_API_URL}/validation`, { data }).catch((err) => {
-        this.logger.error(err);
-      });
-      this.logger.log('Telemetry successfully sent to ai model.');
+      axios
+        .post(`${MODEL_API_URL}/validation`, { data })
+        .then(() => {
+          this.logger.log('Telemetry successfully sent to ai model.');
+        })
+        .catch((err) => {
+          this.logger.error(
+            `Something went wrong sending telemetry to ai model. (${err})`,
+          );
+        });
     } catch (err) {
       this.logger.error(err);
       handleDbExceptions(err);
