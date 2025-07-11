@@ -4,9 +4,9 @@ WORKDIR /app
 
 COPY package*.json ./
 
-COPY . .
+COPY docker .
 RUN rm .env
-RUN mv .env.production .env
+RUN mv .env.production.local .env
 
 RUN npm run build
 
