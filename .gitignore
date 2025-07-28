@@ -16,6 +16,7 @@ lerna-debug.log*
 bun.lockb
 package-lock.json
 pnpm-lock.yml
+pnpm-lock.yaml
 
 # OS
 .DS_Store
